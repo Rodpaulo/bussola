@@ -1,259 +1,345 @@
 import { useState, useEffect } from "react";
 
-// ─── DATA ────────────────────────────────────────────────────────────────────
+// ─── PALETA DE CORES OFICIAL — BRAND BOOK BÚSSOLA ────────────────────────────
+const BRAND = {
+  ouro:       "#C4922A",  // Ouro Bússola (Primária) — CTAs, destaques, logótipo
+  noite:      "#15120E",  // Fundo Noite — background dark
+  carvao:     "#1C1915",  // Superfície Carvão — cards, componentes
+  verde:      "#3D7A5E",  // Verde Compass — Parte II, sucesso
+  roxo:       "#5C4E82",  // Roxo Profundo — Parte III, Ikigai, propósito
+  areia:      "#EDE4D3",  // Areia Quente — texto principal sobre escuro
+  areiaEsc:   "#C8BCA8",  // Areia escura — texto secundário
+  mutado:     "#5A5040",  // Texto mutado, subtext
+  borda:      "#2A2218",  // Bordas subtis
+  bordaClara: "#3A3020",  // Bordas com mais presença
+};
+
+// ─── DADOS DO QUESTIONÁRIO ────────────────────────────────────────────────────
 
 const SECTIONS = [
   {
     id: "wheel",
-    partLabel: "Part I",
-    title: "Where You Stand Today",
-    intro:
-      "Rate your current level of satisfaction in each life domain. Be honest — this is your private compass, not a performance review.",
-    accent: "#C4922A",
+    partLabel: "Parte I",
+    title: "Onde Estás Hoje",
+    intro: "Avalia o teu nível actual de satisfação em cada área da vida. Sê honesto — esta é a tua bússola privada, não uma avaliação de desempenho.",
+    accent: BRAND.ouro,
     questions: [
-      { id: "w1", type: "scale", label: "Health & Energy", subtext: "Physical vitality, sleep quality, your energy levels throughout the day" },
-      { id: "w2", type: "scale", label: "Career & Work", subtext: "How fulfilling, aligned, and purposeful your current professional life feels" },
-      { id: "w3", type: "scale", label: "Finances", subtext: "Your sense of security, freedom, and peace around money" },
-      { id: "w4", type: "scale", label: "Relationships", subtext: "How nourished and connected you feel with family, friends, and close ones" },
-      { id: "w5", type: "scale", label: "Personal Growth", subtext: "How much you are learning, evolving, and becoming who you want to be" },
-      { id: "w6", type: "scale", label: "Fun & Creativity", subtext: "Joy, play, beauty, and creative expression in your daily life" },
-      { id: "w7", type: "scale", label: "Purpose & Meaning", subtext: "Your sense of direction, significance, and reason for being" },
-      { id: "w8", type: "scale", label: "Environment & Space", subtext: "How much your home, city, and surroundings support who you are" },
-      { id: "w9", type: "textarea", label: "Which of these areas feels most urgent to address right now?", subtext: "Don't overthink — go with your gut." },
-      { id: "w10", type: "textarea", label: "Which area, if improved, would have the biggest ripple effect on everything else in your life?", subtext: "Think of the keystone domino." },
+      { id: "w1", type: "scale", label: "Saúde & Energia", subtext: "Vitalidade física, qualidade do sono, os teus níveis de energia ao longo do dia" },
+      { id: "w2", type: "scale", label: "Carreira & Trabalho", subtext: "Até que ponto a tua vida profissional actual te parece significativa, alinhada e com propósito" },
+      { id: "w3", type: "scale", label: "Finanças", subtext: "O teu sentido de segurança, liberdade e paz em relação ao dinheiro" },
+      { id: "w4", type: "scale", label: "Relações", subtext: "Quão nutrido e ligado te sentes com família, amigos e pessoas próximas" },
+      { id: "w5", type: "scale", label: "Crescimento Pessoal", subtext: "O quanto estás a aprender, a evoluir e a tornar-te quem queres ser" },
+      { id: "w6", type: "scale", label: "Diversão & Criatividade", subtext: "Alegria, leveza, beleza e expressão criativa na tua vida quotidiana" },
+      { id: "w7", type: "scale", label: "Propósito & Significado", subtext: "O teu sentido de direcção, importância e razão de ser" },
+      { id: "w8", type: "scale", label: "Ambiente & Espaço", subtext: "Até que ponto a tua casa, cidade e meio te apoiam em quem és" },
+      { id: "w9", type: "textarea", label: "Qual destas áreas sentes ser mais urgente trabalhar agora?", subtext: "Não penses demasiado — vai com o que te vem primeiro." },
+      { id: "w10", type: "textarea", label: "Qual área, se melhorada, teria o maior efeito em cadeia em tudo o resto?", subtext: "Pensa na peça que faz as outras mover-se." },
     ],
   },
   {
     id: "perma",
-    partLabel: "Part II",
-    title: "How You Operate",
-    intro:
-      "These questions go beneath the surface — to understand what drives you, what drains you, and what possibilities already exist in your life right now.",
-    accent: "#5A9B7A",
+    partLabel: "Parte II",
+    title: "Como Funcionas",
+    intro: "Estas perguntas vão além da superfície — para perceber o que te move, o que te drena, e que possibilidades já existem na tua vida neste momento.",
+    accent: BRAND.verde,
     questions: [
-      { id: "p1", type: "textarea", label: "Describe a recent moment when you were completely absorbed in what you were doing.", subtext: "What were you doing? What made it so engaging?" },
-      { id: "p2", type: "textarea", label: "What type of activity makes time disappear for you?", subtext: "The thing where you look up and three hours have passed." },
-      { id: "p3", type: "textarea", label: "What achievement in the last 12 months are you most proud of — however small?", subtext: "It doesn't need to impress anyone but you." },
-      { id: "p4", type: "textarea", label: "What feels unfinished or unlived that quietly bothers you?", subtext: "The thing you haven't done yet but can't fully let go of." },
-      { id: "p5", type: "textarea", label: "What do you find yourself thinking about in quiet moments — on walks, before sleep?", subtext: "Thoughts that return uninvited." },
-      { id: "p6", type: "textarea", label: "Who in your life actively believes in your potential?", subtext: "Name them. Think about what they see in you that you might miss." },
+      { id: "p1", type: "textarea", label: "Descreve um momento recente em que estavas completamente absorto no que fazias.", subtext: "O que fazias? O que tornava aquilo tão envolvente?" },
+      { id: "p2", type: "textarea", label: "Que tipo de actividade faz o tempo desaparecer para ti?", subtext: "Aquela coisa em que olhas para o relógio e passaram três horas." },
+      { id: "p3", type: "textarea", label: "De que conquista dos últimos 12 meses te orgulhas mais — por menor que seja?", subtext: "Não precisa de impressionar ninguém além de ti." },
+      { id: "p4", type: "textarea", label: "O que sentes inacabado ou não vivido e que te incomoda em silêncio?", subtext: "Aquilo que ainda não fizeste mas não consegues largar completamente." },
+      { id: "p5", type: "textarea", label: "Em que pensas nos momentos de silêncio — a caminhar, antes de adormecer?", subtext: "Pensamentos que voltam sem seres convidado." },
+      { id: "p6", type: "textarea", label: "Quem na tua vida acredita activamente no teu potencial?", subtext: "Pensa no que essa pessoa vê em ti que talvez tu não vejas." },
       {
-        id: "p7", type: "choice", label: "The people around you mostly...", subtext: "Be honest. This matters for your next chapter.",
-        choices: ["Challenge me to grow and become more", "Keep me comfortable and affirm who I already am", "A mix — it depends on the person", "Neither — I feel mostly alone in this"],
+        id: "p7", type: "choice", label: "As pessoas à tua volta, na maioria...", subtext: "Sê honesto. Isto é importante para o teu próximo capítulo.",
+        choices: ["Desafiam-me a crescer e a ser mais", "Mantêm-me confortável e confirmam quem já sou", "Uma mistura — depende da pessoa", "Nenhum dos dois — sinto-me maioritariamente sozinho nisto"],
       },
-      { id: "p8", type: "textarea", label: "What drains your energy most right now?", subtext: "Obligations, people, environments, habits — be specific." },
-      { id: "p9", type: "textarea", label: "What are your real constraints?", subtext: "Time, money, geography, dependents, health — list what genuinely limits you today." },
+      { id: "p8", type: "textarea", label: "O que te drena mais energia neste momento?", subtext: "Obrigações, pessoas, ambientes, hábitos — sê específico." },
+      { id: "p9", type: "textarea", label: "Quais são os teus constrangimentos reais?", subtext: "Tempo, dinheiro, geografia, dependentes, saúde — lista o que genuinamente te limita hoje." },
       {
-        id: "p10", type: "choice", label: "On a typical week, how many hours could you realistically dedicate to a personal project?", subtext: "Be realistic, not aspirational.",
-        choices: ["Fewer than 3 hours — life is very full right now", "3–7 hours — something is possible", "7–15 hours — I have real bandwidth", "15+ hours — I can commit seriously"],
+        id: "p10", type: "choice", label: "Numa semana típica, quantas horas podias realisticamente dedicar a um projecto pessoal?", subtext: "Sê realista, não aspiracional.",
+        choices: ["Menos de 3 horas — a vida está muito cheia agora", "3 a 7 horas — algo é possível", "7 a 15 horas — tenho margem real", "Mais de 15 horas — posso comprometer-me a sério"],
       },
-      { id: "p11", type: "scale", label: "Current emotional baseline", subtext: "1 = depleted, stuck, closed  ·  10 = energized, open, alive" },
-      { id: "p12", type: "textarea", label: "What's the biggest fear that holds you back from trying something new?", subtext: "Failure? Judgment? Wasting time? Something else? Name it." },
+      { id: "p11", type: "scale", label: "Estado emocional actual", subtext: "1 = esgotado, preso, fechado  ·  10 = energizado, aberto, vivo" },
+      { id: "p12", type: "textarea", label: "Qual é o maior medo que te impede de tentar algo novo?", subtext: "Falhar? O julgamento dos outros? Perder tempo? Outra coisa? Nomeia-o." },
     ],
   },
   {
     id: "ikigai",
-    partLabel: "Part III",
-    title: "Where You Could Go",
-    intro:
-      "Now we map the territory ahead. These questions reveal the intersection between your passions, your strengths, what the world needs, and what you can be rewarded for.",
-    accent: "#8B7BAB",
+    partLabel: "Parte III",
+    title: "Para Onde Podes Ir",
+    intro: "Agora mapeamos o território à frente. Estas perguntas revelam o cruzamento entre as tuas paixões, as tuas forças, o que o mundo precisa e o que podes ser recompensado por fazer.",
+    accent: BRAND.roxo,
     questions: [
-      { id: "i1", type: "textarea", label: "If you had a completely free Saturday with no obligations or expectations, how would you spend it?", subtext: "Not what you 'should' do — what you'd actually do." },
-      { id: "i2", type: "textarea", label: "What topics could you read about, watch, or talk about for hours without getting bored?", subtext: "Subjects that have always had a magnetic pull on you." },
-      { id: "i3", type: "textarea", label: "What did you love doing as a child or young adult that you've since abandoned?", subtext: "Activities or modes of being you left behind." },
-      { id: "i4", type: "textarea", label: "What do people consistently come to you for, ask your advice on, or thank you for?", subtext: "Others often see our strengths before we do." },
-      { id: "i5", type: "textarea", label: "What skills have you built over the years that you're quietly proud of?", subtext: "Professional and personal — include the ones you take for granted." },
-      { id: "i6", type: "textarea", label: "What comes naturally to you that seems hard for most people?", subtext: "Things you do effortlessly that others struggle with." },
-      { id: "i7", type: "textarea", label: "What problem in the world genuinely makes you angry or sad?", subtext: "The injustice, gap, or suffering you can't look away from." },
-      { id: "i8", type: "textarea", label: "Who is the kind of person you most want to help or serve?", subtext: "A specific person type, community, stage of life, or kind of struggle." },
-      { id: "i9", type: "textarea", label: "What would you build or create if you knew it would succeed?", subtext: "Remove the fear of failure entirely. What would you make?" },
+      { id: "i1", type: "textarea", label: "Se tivesses um sábado completamente livre, sem obrigações nem expectativas, como o passarias?", subtext: "Não o que 'devias' fazer — o que realmente farias." },
+      { id: "i2", type: "textarea", label: "Sobre que temas podes ler, ver ou falar durante horas sem te aborrecer?", subtext: "Assuntos que sempre tiveram uma atracção magnética sobre ti." },
+      { id: "i3", type: "textarea", label: "O que adoravas fazer em criança ou jovem adulto e que abandonaste entretanto?", subtext: "Actividades ou formas de ser que deixaste para trás." },
+      { id: "i4", type: "textarea", label: "Para que te procuram sistematicamente, te pedem conselho ou te agradecem?", subtext: "Os outros vêem muitas vezes as nossas forças antes de nós." },
+      { id: "i5", type: "textarea", label: "Que competências construíste ao longo dos anos de que te orgulhas em silêncio?", subtext: "Profissionais e pessoais — inclui as que consideras óbvias." },
+      { id: "i6", type: "textarea", label: "O que te sai naturalmente e parece difícil para a maioria das pessoas?", subtext: "Coisas que fazes sem esforço e que os outros lutam para conseguir." },
+      { id: "i7", type: "textarea", label: "Que problema no mundo te deixa genuinamente indignado ou triste?", subtext: "A injustiça, a lacuna ou o sofrimento de que não consegues desviar o olhar." },
+      { id: "i8", type: "textarea", label: "Que tipo de pessoa mais queres ajudar ou servir?", subtext: "Um perfil específico, comunidade, fase de vida ou tipo de dificuldade." },
+      { id: "i9", type: "textarea", label: "O que construirias ou criarias se soubesses que ia correr bem?", subtext: "Remove o medo do fracasso completamente. O que farias?" },
       {
-        id: "i10", type: "choice", label: "How important is financial return from your next project?", subtext: "Be honest about your needs and your values.",
-        choices: ["Critical — it must generate real income", "Important but secondary to impact and meaning", "Nice to have, but not the main point", "Irrelevant for now — this is about meaning and expression"],
+        id: "i10", type: "choice", label: "Quão importante é o retorno financeiro do teu próximo projecto?", subtext: "Sê honesto sobre as tuas necessidades e os teus valores.",
+        choices: ["Crítico — tem de gerar rendimento real", "Importante, mas secundário ao impacto e ao significado", "Seria bom ter, mas não é o ponto principal", "Irrelevante por agora — isto é sobre significado e expressão"],
       },
-      { id: "i11", type: "textarea", label: "What value could you create for others that they'd pay for, follow you for, or give their time for?", subtext: "Think about what you could genuinely offer the world." },
-      { id: "i12", type: "textarea", label: "Describe your ideal life in 5 years in a short paragraph.", subtext: "Where are you? What are you doing? Who are you with? How do you feel?" },
-      { id: "i13", type: "textarea", label: "What's the one project or direction that keeps coming back to you — even if it scares you?", subtext: "The idea you keep returning to but haven't fully committed to yet." },
+      { id: "i11", type: "textarea", label: "Que valor poderias criar para os outros que pagariam, te seguiriam ou dariam o seu tempo?", subtext: "Pensa no que poderias genuinamente oferecer ao mundo." },
+      { id: "i12", type: "textarea", label: "Descreve a tua vida ideal daqui a 5 anos num parágrafo curto.", subtext: "Onde estás? O que fazes? Com quem estás? Como te sentes?" },
+      { id: "i13", type: "textarea", label: "Qual é o projecto ou direcção que continua a voltar — mesmo que te assuste?", subtext: "A ideia a que continuas a regressar mas à qual ainda não te comprometeste completamente." },
     ],
   },
 ];
 
-const SYSTEM_PROMPT = `You are a masterful life direction consultant with deep expertise in positive psychology (PERMA model), career design, Ikigai philosophy, and human potential. You have received the complete responses to a 35-question life compass assessment from someone seeking clarity on their path forward.
+// ─── SYSTEM PROMPT ────────────────────────────────────────────────────────────
 
-Your task: produce a deeply personalized, concrete, honest, and actionable report. Be specific — reference the person's actual answers. Be honest — name contradictions and blind spots kindly. Be practical — every recommendation must be actionable.
+const SYSTEM_PROMPT = `És um consultor de orientação de vida com profunda experiência em psicologia positiva (modelo PERMA), design de carreira, filosofia Ikigai e potencial humano. Recebes as respostas completas a um questionário de 35 perguntas de uma pessoa que procura clareza sobre o seu caminho.
 
-Return ONLY valid JSON. No markdown. No backticks. No preamble. Use exactly this structure:
+A tua tarefa: produzir um relatório profundamente personalizado, concreto, honesto e accionável. Sê específico — faz referência às respostas reais da pessoa. Sê honesto — identifica contradições e pontos cegos com cuidado. Sê prático — cada recomendação tem de ser accionável.
+
+CONTEXTO CULTURAL PORTUGUÊS — aplica isto em todo o relatório:
+- Escreve em português de Portugal. Usa a forma "tu" (não "você"). Sem brasileirismos.
+- O mercado de trabalho português tem uma estrutura dual: sector público e grandes empresas oferecem estabilidade mas mobilidade limitada. O ecossistema de startups está a crescer (mais de 5.000 startups activas, €448M captados em 2024) mas os salários continuam abaixo da média europeia.
+- Para adultos 30–50 anos: o guião social da "boa vida" (emprego estável, casa, família) foi muitas vezes seguido à custa da realização pessoal. Muitos estão agora a questionar isso — não é uma crise de meia-idade, é um despertar para possibilidades não vividas.
+- Para jovens adultos 22–32 anos: a narrativa da "fuga de cérebros" é real e psicologicamente pesada. Desafia isto activamente quando o perfil da pessoa não o justifica.
+- Constrangimentos reais em Portugal: custos de habitação em Lisboa e Porto, Segurança Social, AT — reconhece estes quando sugeres caminhos de projecto.
+- O tom deve parecer uma carta de um amigo português inteligente que leva a pessoa a sério — directo, cálido, sem guru, sem auto-ajuda de aeroporto.
+
+Devolve APENAS JSON válido. Sem markdown. Sem backticks. Sem preâmbulo. Usa exactamente esta estrutura:
 
 {
-  "situationProfile": "2-3 paragraphs assessing their current situation with full specificity. Identify their strengths, tensions, and the underlying themes across their answers. Do NOT be generic.",
+  "situationProfile": "2 a 3 parágrafos a avaliar a situação actual com total especificidade. NÃO sejas genérico. Escreve em português de Portugal.",
   "ikigaiCompass": {
-    "whatYouLove": "2-3 sentences synthesizing their passions and energizers based on their actual answers",
-    "whatYoureGoodAt": "2-3 sentences on their evident strengths and skills from their answers",
-    "whatWorldNeeds": "2-3 sentences on the impact and service direction that fits this specific person",
-    "whatYouCanBeRewardedFor": "2-3 sentences on viable value creation given their profile and constraints"
+    "whatYouLove": "2 a 3 frases sobre as paixões e energizadores da pessoa",
+    "whatYoureGoodAt": "2 a 3 frases sobre as forças e competências evidentes",
+    "whatWorldNeeds": "2 a 3 frases sobre direcção de impacto com referência ao contexto português",
+    "whatYouCanBeRewardedFor": "2 a 3 frases sobre criação de valor viável em Portugal"
   },
   "projectPaths": [
     {
       "rank": 1,
-      "title": "Short evocative title for this path",
-      "archetype": "One word from: Builder, Teacher, Maker, Connector, Explorer, Healer, Advocate, Creator, Curator, Strategist",
-      "description": "2-3 sentences describing what this project path is concretely and what form it could take in practice",
-      "whyItFitsYou": "2-3 sentences explaining specifically why THIS path fits THIS person based on their actual answers",
-      "firstThreeSteps": ["Concrete action to take THIS week", "Concrete action to take THIS month", "Concrete action to take in 90 days"]
+      "title": "Título curto e evocativo",
+      "archetype": "Uma palavra de: Builder, Teacher, Maker, Connector, Explorer, Healer, Advocate, Creator, Curator, Strategist",
+      "description": "2 a 3 frases concretas com contexto português",
+      "whyItFitsYou": "2 a 3 frases baseadas nas respostas reais",
+      "firstThreeSteps": ["Acção ESTA semana", "Acção ESTE mês", "Acção em 90 dias"]
     }
   ],
   "actionPlan": {
-    "weeks1to4": "Specific focus and concrete actions for the first month — what to do, what to stop, what to start",
-    "weeks5to8": "What to build on, what experiments to run, and next moves for weeks 5-8",
-    "weeks9to12": "The 3-month milestone — what it should look like and how to know you're on track"
+    "weeks1to4": "Foco e acções concretas para o primeiro mês",
+    "weeks5to8": "O que consolidar e próximos movimentos",
+    "weeks9to12": "O marco dos 3 meses"
   },
-  "closingThought": "One powerful, personal, honest closing paragraph that speaks directly to this person — acknowledge their specific situation and fear, and give them the honest push they need."
+  "closingThought": "Um parágrafo final poderoso e honesto que fala directamente a esta pessoa. Em português de Portugal, tom de amigo inteligente."
 }
 
-Generate exactly 3 to 5 project paths ordered from most to least recommended. Make path #1 the clearest, most actionable opportunity you see. Ground every recommendation in what they actually told you.`;
+Gera 3 a 5 caminhos de projecto. Faz do primeiro a oportunidade mais clara. Escreve TODO o relatório em português de Portugal.`;
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
+// ─── ARCHETYPE MAPS ───────────────────────────────────────────────────────────
 
-const C = {
-  bg: "#15120E",
-  surface: "#1C1915",
-  surfaceHover: "#23201A",
-  border: "#2C2820",
-  borderLight: "#3A3328",
-  textPrimary: "#EDE4D3",
-  textSecondary: "#9A8C7A",
-  textMuted: "#5A5040",
+const archetypeLabels = {
+  Builder: "Construtor", Teacher: "Professor", Maker: "Criador",
+  Connector: "Conector", Explorer: "Explorador", Healer: "Curador",
+  Advocate: "Defensor", Creator: "Criativo", Curator: "Curador", Strategist: "Estratega",
 };
 
-// ─── WHEEL CHART ─────────────────────────────────────────────────────────────
+const archetypeColor = {
+  Builder: BRAND.ouro, Teacher: BRAND.verde, Maker: BRAND.ouro,
+  Connector: BRAND.verde, Explorer: BRAND.roxo, Healer: BRAND.verde,
+  Advocate: BRAND.roxo, Creator: BRAND.ouro, Curator: BRAND.roxo, Strategist: BRAND.ouro,
+};
+
+// ─── COMPASS ROSE ─────────────────────────────────────────────────────────────
+
+function CompassRose({ size = 120 }) {
+  const cx = size / 2, cy = size / 2, r = size * 0.43;
+  const ri = size * 0.32, rm = size * 0.17;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={BRAND.ouro} strokeWidth="0.6" opacity="0.5" />
+      <circle cx={cx} cy={cy} r={ri} fill="none" stroke={BRAND.ouro} strokeWidth="0.4" opacity="0.3" />
+      <circle cx={cx} cy={cy} r={rm} fill="none" stroke={BRAND.ouro} strokeWidth="0.3" opacity="0.3" />
+      <circle cx={cx} cy={cy} r={size * 0.025} fill={BRAND.ouro} opacity="0.8" />
+      {[0,90,180,270].map(deg => {
+        const rad = deg * Math.PI / 180;
+        return <line key={deg}
+          x1={cx + rm * Math.sin(rad)} y1={cy - rm * Math.cos(rad)}
+          x2={cx + r * Math.sin(rad)} y2={cy - r * Math.cos(rad)}
+          stroke={BRAND.ouro} strokeWidth="0.7" opacity="0.5" />;
+      })}
+      {[45,135,225,315].map(deg => {
+        const rad = deg * Math.PI / 180;
+        return <line key={deg}
+          x1={cx + rm * Math.sin(rad)} y1={cy - rm * Math.cos(rad)}
+          x2={cx + ri * Math.sin(rad)} y2={cy - ri * Math.cos(rad)}
+          stroke={BRAND.ouro} strokeWidth="0.4" opacity="0.3" />;
+      })}
+      {/* North needle — gold */}
+      <polygon points={`${cx},${cy - r * 0.9} ${cx - size*0.04},${cy} ${cx + size*0.04},${cy}`}
+        fill={BRAND.ouro} opacity="0.9" />
+      {/* South needle — muted */}
+      <polygon points={`${cx},${cy + r * 0.9} ${cx - size*0.03},${cy} ${cx + size*0.03},${cy}`}
+        fill={BRAND.areiaEsc} opacity="0.3" />
+      {/* N label */}
+      <text x={cx} y={cy - r * 0.9 - 5} textAnchor="middle" dominantBaseline="auto"
+        fill={BRAND.ouro} fontSize={size * 0.07} fontFamily="'DM Sans', sans-serif"
+        fontWeight="500" opacity="0.8" letterSpacing="1">N</text>
+    </svg>
+  );
+}
+
+// ─── RODA DA VIDA ─────────────────────────────────────────────────────────────
 
 function WheelChart({ scores, labels }) {
-  const cx = 150, cy = 150, r = 105;
+  const cx = 150, cy = 150, r = 100;
   const n = scores.length;
   const toXY = (i, val) => {
     const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
     const rv = (val / 10) * r;
     return { x: cx + rv * Math.cos(angle), y: cy + rv * Math.sin(angle) };
   };
-  const toLabel = (i) => {
+  const toLabelPos = (i) => {
     const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
     return { x: cx + (r + 30) * Math.cos(angle), y: cy + (r + 30) * Math.sin(angle) };
   };
   const points = scores.map((s, i) => { const p = toXY(i, s || 0); return `${p.x},${p.y}`; }).join(" ");
-
   return (
-    <svg viewBox="0 0 300 300" style={{ width: "100%", maxWidth: "300px", display: "block", margin: "0 auto 8px" }}>
-      {[2, 4, 6, 8, 10].map(ring => (
+    <svg viewBox="0 0 300 300" style={{ width: "100%", maxWidth: "280px", display: "block", margin: "0 auto 12px" }}>
+      {[2,4,6,8,10].map(ring => (
         <polygon key={ring}
           points={Array.from({ length: n }, (_, i) => { const p = toXY(i, ring); return `${p.x},${p.y}`; }).join(" ")}
-          fill="none" stroke={C.border} strokeWidth="0.8"
-        />
+          fill="none" stroke={BRAND.borda} strokeWidth={ring === 10 ? "0.8" : "0.5"} />
       ))}
       {Array.from({ length: n }, (_, i) => {
         const outer = toXY(i, 10);
-        return <line key={i} x1={cx} y1={cy} x2={outer.x} y2={outer.y} stroke={C.border} strokeWidth="0.8" />;
+        return <line key={i} x1={cx} y1={cy} x2={outer.x} y2={outer.y} stroke={BRAND.borda} strokeWidth="0.5" />;
       })}
-      <polygon points={points} fill="rgba(196,146,42,0.15)" stroke="#C4922A" strokeWidth="1.5" strokeLinejoin="round" />
-      {scores.map((s, i) => { const p = toXY(i, s || 0); return <circle key={i} cx={p.x} cy={p.y} r="3.5" fill="#C4922A" />; })}
+      <polygon points={points} fill={`${BRAND.ouro}18`} stroke={BRAND.ouro} strokeWidth="1.5" strokeLinejoin="round" />
+      {scores.map((s, i) => {
+        const p = toXY(i, s || 0);
+        return (
+          <g key={i}>
+            <circle cx={p.x} cy={p.y} r="5" fill={BRAND.noite} stroke={BRAND.ouro} strokeWidth="1.5" />
+            <circle cx={p.x} cy={p.y} r="2" fill={BRAND.ouro} />
+          </g>
+        );
+      })}
       {labels.map((label, i) => {
-        const lp = toLabel(i);
+        const lp = toLabelPos(i);
         return (
           <text key={i} x={lp.x} y={lp.y} textAnchor="middle" dominantBaseline="middle"
-            fill={C.textMuted} fontSize="9.5" fontFamily="'DM Sans', sans-serif"
-          >{label}</text>
+            fill={BRAND.mutado} fontSize="9" fontFamily="'DM Sans', sans-serif">{label}</text>
         );
       })}
     </svg>
   );
 }
 
-// ─── SECTION WRAPPER ─────────────────────────────────────────────────────────
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
 
 function SectionBlock({ title, accent, children }) {
   return (
-    <div style={{ marginBottom: "60px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "28px" }}>
-        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: accent, flexShrink: 0 }} />
-        <p style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: accent, fontFamily: "'DM Sans', sans-serif" }}>{title}</p>
-        <div style={{ flex: 1, height: "1px", background: C.border }} />
+    <div style={{ marginBottom: "64px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "32px" }}>
+        <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: accent, flexShrink: 0 }} />
+        <p style={{ fontSize: "10px", letterSpacing: "3.5px", textTransform: "uppercase", color: accent, fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}>{title}</p>
+        <div style={{ flex: 1, height: "0.5px", background: BRAND.borda }} />
       </div>
       {children}
     </div>
   );
 }
 
-// ─── RESULTS VIEW ────────────────────────────────────────────────────────────
+function Divider({ color = BRAND.ouro }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "52px 0" }}>
+      <div style={{ flex: 1, height: "0.5px", background: BRAND.borda }} />
+      <div style={{ width: "4px", height: "4px", background: color, borderRadius: "50%", opacity: 0.4 }} />
+      <div style={{ flex: 1, height: "0.5px", background: BRAND.borda }} />
+    </div>
+  );
+}
+
+// ─── RESULTS VIEW ─────────────────────────────────────────────────────────────
 
 function ResultsView({ result, answers, onRestart }) {
   const wheelIds = ["w1","w2","w3","w4","w5","w6","w7","w8"];
-  const wheelLabels = ["Health","Career","Finance","Relations","Growth","Creativity","Purpose","Space"];
+  const wheelLabels = ["Saúde","Carreira","Finanças","Relações","Crescimento","Criativ.","Propósito","Ambiente"];
+  const wheelLabelsFull = ["Saúde & Energia","Carreira & Trabalho","Finanças","Relações","Crescimento Pessoal","Diversão & Criatividade","Propósito & Significado","Ambiente & Espaço"];
   const wheelScores = wheelIds.map(id => answers[id] || 0);
 
-  const archetypeColor = {
-    Builder: "#C4922A", Teacher: "#5A9B7A", Maker: "#C4922A", Connector: "#5A9B7A",
-    Explorer: "#8B7BAB", Healer: "#5A9B7A", Advocate: "#8B7BAB", Creator: "#C4922A",
-    Curator: "#8B7BAB", Strategist: "#C4922A",
-  };
-
   const ikigaiItems = [
-    { key: "whatYouLove", label: "What You Love", symbol: "♥", color: "#C4922A" },
-    { key: "whatYoureGoodAt", label: "What You're Good At", symbol: "◆", color: "#5A9B7A" },
-    { key: "whatWorldNeeds", label: "What The World Needs", symbol: "◎", color: "#8B7BAB" },
-    { key: "whatYouCanBeRewardedFor", label: "What Rewards You", symbol: "✦", color: "#C4922A" },
+    { key: "whatYouLove", label: "O Que Amas", symbol: "♥", color: BRAND.ouro },
+    { key: "whatYoureGoodAt", label: "No Que És Bom", symbol: "◆", color: BRAND.verde },
+    { key: "whatWorldNeeds", label: "O Que o Mundo Precisa", symbol: "◎", color: BRAND.roxo },
+    { key: "whatYouCanBeRewardedFor", label: "O Que Te Pode Recompensar", symbol: "✦", color: BRAND.ouro },
   ];
 
   const planPhases = [
-    { key: "weeks1to4", label: "Weeks 1–4", sub: "Foundation" },
-    { key: "weeks5to8", label: "Weeks 5–8", sub: "Momentum" },
-    { key: "weeks9to12", label: "Weeks 9–12", sub: "Milestone" },
+    { key: "weeks1to4", label: "Semanas 1–4", sub: "Fundação", color: BRAND.ouro },
+    { key: "weeks5to8", label: "Semanas 5–8", sub: "Momentum", color: BRAND.verde },
+    { key: "weeks9to12", label: "Semanas 9–12", sub: "Marco", color: BRAND.roxo },
   ];
 
   return (
     <div style={{ paddingTop: "80px", paddingBottom: "120px" }}>
-      {/* Report header */}
-      <div style={{ marginBottom: "72px" }}>
-        <p style={{ fontSize: "10px", letterSpacing: "3px", color: C.textMuted, textTransform: "uppercase", marginBottom: "18px", fontFamily: "'DM Sans', sans-serif" }}>
-          Life Compass · Personal Report
+
+      {/* Cabeçalho */}
+      <div style={{ marginBottom: "80px", position: "relative" }}>
+        <div style={{ position: "absolute", right: "-10px", top: "-20px", opacity: 0.06 }}>
+          <CompassRose size={160} />
+        </div>
+        <p style={{ fontSize: "10px", letterSpacing: "4px", color: BRAND.mutado, textTransform: "uppercase", marginBottom: "20px", fontFamily: "'DM Sans', sans-serif" }}>
+          Bússola · Relatório Pessoal
         </p>
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(44px, 7vw, 68px)", fontWeight: 300, lineHeight: 1.05, color: C.textPrimary, marginBottom: "24px" }}>
-          Your Path<br /><em style={{ fontStyle: "italic" }}>Forward</em>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(40px, 7vw, 62px)", fontWeight: 300, lineHeight: 1.05, color: BRAND.areia, marginBottom: "20px" }}>
+          O Teu Caminho<br /><em style={{ fontStyle: "italic", color: BRAND.ouro }}>Em Frente</em>
         </h1>
-        <div style={{ width: "40px", height: "1.5px", background: "#C4922A" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+          <div style={{ width: "48px", height: "1px", background: BRAND.ouro }} />
+          <p style={{ fontSize: "12px", color: BRAND.mutado, fontFamily: "'DM Sans', sans-serif", fontStyle: "italic", letterSpacing: "0.5px" }}>
+            Encontra o teu norte.
+          </p>
+        </div>
       </div>
 
-      {/* Life Balance Snapshot */}
-      <SectionBlock title="Life Balance Snapshot" accent="#C4922A">
+      {/* Roda da Vida */}
+      <SectionBlock title="A Tua Roda da Vida" accent={BRAND.ouro}>
         <WheelChart scores={wheelScores} labels={wheelLabels} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px", marginTop: "20px" }}>
           {wheelLabels.map((label, i) => (
-            <div key={i} style={{ textAlign: "center" }}>
-              <p style={{ fontSize: "18px", fontFamily: "'Cormorant Garamond', serif", color: "#C4922A", fontWeight: 500 }}>{wheelScores[i]}</p>
-              <p style={{ fontSize: "10px", color: C.textMuted, fontFamily: "'DM Sans', sans-serif" }}>{label}</p>
+            <div key={i} style={{ textAlign: "center", padding: "12px 6px", background: BRAND.carvao, borderRadius: "6px", border: `0.5px solid ${BRAND.borda}` }}>
+              <p style={{ fontSize: "22px", fontFamily: "'Cormorant Garamond', serif", color: BRAND.ouro, fontWeight: 500, lineHeight: 1 }}>{wheelScores[i]}</p>
+              <p style={{ fontSize: "9px", color: BRAND.mutado, fontFamily: "'DM Sans', sans-serif", marginTop: "5px", letterSpacing: "0.3px" }}>{label}</p>
             </div>
           ))}
         </div>
       </SectionBlock>
 
-      {/* Situation Profile */}
-      <SectionBlock title="Your Current Situation" accent="#C4922A">
+      {/* Situação Actual */}
+      <SectionBlock title="A Tua Situação Actual" accent={BRAND.ouro}>
         {result.situationProfile.split(/\n\n+/).map((para, i, arr) => (
-          <p key={i} style={{ fontSize: "16px", lineHeight: 1.85, color: C.textSecondary, marginBottom: i < arr.length - 1 ? "20px" : 0, fontFamily: "'DM Sans', sans-serif" }}>
+          <p key={i} style={{ fontSize: "16px", lineHeight: 1.9, color: BRAND.areiaEsc, marginBottom: i < arr.length - 1 ? "22px" : 0, fontFamily: "'DM Sans', sans-serif" }}>
             {para.trim()}
           </p>
         ))}
       </SectionBlock>
 
-      {/* Ikigai Compass */}
-      <SectionBlock title="Your Ikigai Compass" accent="#5A9B7A">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+      <Divider color={BRAND.verde} />
+
+      {/* Bússola Ikigai */}
+      <SectionBlock title="A Tua Bússola Ikigai" accent={BRAND.verde}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
           {ikigaiItems.map(item => (
-            <div key={item.key} style={{ padding: "20px", background: C.surface, border: `1px solid ${C.border}`, borderRadius: "8px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "11px" }}>
-                <span style={{ color: item.color, fontSize: "13px" }}>{item.symbol}</span>
-                <p style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: item.color, fontFamily: "'DM Sans', sans-serif" }}>{item.label}</p>
+            <div key={item.key} style={{
+              padding: "22px", background: BRAND.carvao,
+              border: `0.5px solid ${BRAND.borda}`, borderRadius: "8px",
+              borderTop: `2px solid ${item.color}`,
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+                <span style={{ color: item.color, fontSize: "12px" }}>{item.symbol}</span>
+                <p style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: item.color, fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}>{item.label}</p>
               </div>
-              <p style={{ fontSize: "13.5px", lineHeight: 1.75, color: C.textSecondary, fontFamily: "'DM Sans', sans-serif" }}>
+              <p style={{ fontSize: "13.5px", lineHeight: 1.75, color: BRAND.areiaEsc, fontFamily: "'DM Sans', sans-serif" }}>
                 {result.ikigaiCompass[item.key]}
               </p>
             </div>
@@ -261,44 +347,45 @@ function ResultsView({ result, answers, onRestart }) {
         </div>
       </SectionBlock>
 
-      {/* Project Paths */}
-      <SectionBlock title="Your Project Paths" accent="#8B7BAB">
+      <Divider color={BRAND.roxo} />
+
+      {/* Caminhos de Projecto */}
+      <SectionBlock title="Os Teus Caminhos de Projecto" accent={BRAND.roxo}>
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           {result.projectPaths.map((path, i) => {
-            const pAccent = archetypeColor[path.archetype] || "#C4922A";
+            const pAccent = archetypeColor[path.archetype] || BRAND.ouro;
             const isTop = i === 0;
             return (
               <div key={i} style={{
-                padding: "28px",
-                background: C.surface,
-                border: `1px solid ${isTop ? pAccent + "55" : C.border}`,
-                borderRadius: "8px",
-                position: "relative",
-                overflow: "hidden",
+                padding: "30px", background: BRAND.carvao,
+                border: `0.5px solid ${isTop ? pAccent + "55" : BRAND.borda}`,
+                borderRadius: "8px", position: "relative", overflow: "hidden",
               }}>
                 {isTop && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: pAccent }} />}
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px", flexWrap: "wrap" }}>
-                  <span style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: pAccent, fontFamily: "'DM Sans', sans-serif" }}>
-                    {isTop ? "✦ Top Recommendation" : `Path ${i + 1}`}
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "18px", flexWrap: "wrap" }}>
+                  <span style={{ fontSize: "9px", letterSpacing: "2.5px", textTransform: "uppercase", color: pAccent, fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}>
+                    {isTop ? "✦ Recomendação Principal" : `Caminho ${i + 1}`}
                   </span>
-                  <span style={{ fontSize: "10px", color: C.textMuted, padding: "3px 10px", border: `1px solid ${C.borderLight}`, borderRadius: "20px", fontFamily: "'DM Sans', sans-serif" }}>
-                    {path.archetype}
+                  <span style={{ fontSize: "10px", color: pAccent, padding: "3px 12px", border: `0.5px solid ${pAccent}44`, borderRadius: "20px", fontFamily: "'DM Sans', sans-serif" }}>
+                    {archetypeLabels[path.archetype] || path.archetype}
                   </span>
                 </div>
-                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 500, color: C.textPrimary, marginBottom: "12px" }}>
+                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 500, color: BRAND.areia, marginBottom: "14px", lineHeight: 1.2 }}>
                   {path.title}
                 </h3>
-                <p style={{ fontSize: "15px", lineHeight: 1.75, color: C.textSecondary, marginBottom: "14px", fontFamily: "'DM Sans', sans-serif" }}>
+                <p style={{ fontSize: "15px", lineHeight: 1.8, color: BRAND.areiaEsc, marginBottom: "14px", fontFamily: "'DM Sans', sans-serif" }}>
                   {path.description}
                 </p>
-                <p style={{ fontSize: "13.5px", lineHeight: 1.75, color: C.textMuted, marginBottom: "24px", fontStyle: "italic", fontFamily: "'DM Sans', sans-serif" }}>
-                  Why it fits you: {path.whyItFitsYou}
+                <p style={{ fontSize: "13px", lineHeight: 1.75, color: BRAND.mutado, marginBottom: "26px", fontStyle: "italic", fontFamily: "'DM Sans', sans-serif" }}>
+                  Porque se adequa a ti: {path.whyItFitsYou}
                 </p>
-                <p style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: pAccent, marginBottom: "14px", fontFamily: "'DM Sans', sans-serif" }}>First Three Steps</p>
+                <p style={{ fontSize: "9px", letterSpacing: "2.5px", textTransform: "uppercase", color: pAccent, marginBottom: "16px", fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}>Primeiros Três Passos</p>
                 {path.firstThreeSteps.map((step, j) => (
-                  <div key={j} style={{ display: "flex", gap: "14px", alignItems: "flex-start", marginBottom: j < 2 ? "10px" : 0 }}>
-                    <span style={{ fontSize: "11px", color: pAccent, fontWeight: 600, minWidth: "18px", marginTop: "3px", fontFamily: "'DM Sans', sans-serif" }}>{j + 1}.</span>
-                    <p style={{ fontSize: "14px", lineHeight: 1.65, color: C.textSecondary, fontFamily: "'DM Sans', sans-serif" }}>{step}</p>
+                  <div key={j} style={{ display: "flex", gap: "16px", alignItems: "flex-start", marginBottom: j < 2 ? "12px" : 0 }}>
+                    <div style={{ width: "22px", height: "22px", borderRadius: "50%", border: `1px solid ${pAccent}55`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "1px" }}>
+                      <span style={{ fontSize: "10px", color: pAccent, fontWeight: 600, fontFamily: "'DM Sans', sans-serif" }}>{j + 1}</span>
+                    </div>
+                    <p style={{ fontSize: "14px", lineHeight: 1.7, color: BRAND.areiaEsc, fontFamily: "'DM Sans', sans-serif" }}>{step}</p>
                   </div>
                 ))}
               </div>
@@ -307,112 +394,97 @@ function ResultsView({ result, answers, onRestart }) {
         </div>
       </SectionBlock>
 
-      {/* 90-Day Action Plan */}
-      <SectionBlock title="Your 90-Day Runway" accent="#C4922A">
+      <Divider color={BRAND.ouro} />
+
+      {/* Plano 90 Dias */}
+      <SectionBlock title="O Teu Plano de 90 Dias" accent={BRAND.ouro}>
         {planPhases.map((phase, i) => (
-          <div key={phase.key} style={{ display: "flex", gap: "24px", paddingBottom: i < 2 ? "32px" : 0 }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "28px", flexShrink: 0 }}>
-              <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#C4922A", marginTop: "4px" }} />
-              {i < 2 && <div style={{ width: "1px", flex: 1, background: C.border, marginTop: "8px" }} />}
+          <div key={phase.key} style={{ display: "flex", gap: "24px", paddingBottom: i < 2 ? "36px" : 0 }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "32px", flexShrink: 0 }}>
+              <div style={{ width: "32px", height: "32px", borderRadius: "50%", border: `1.5px solid ${phase.color}`, display: "flex", alignItems: "center", justifyContent: "center", background: `${phase.color}14` }}>
+                <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: phase.color }} />
+              </div>
+              {i < 2 && <div style={{ width: "1px", flex: 1, background: BRAND.borda, marginTop: "6px" }} />}
             </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4922A", marginBottom: "4px", fontFamily: "'DM Sans', sans-serif" }}>{phase.label}</p>
-              <p style={{ fontSize: "12px", color: C.textMuted, marginBottom: "10px", fontFamily: "'DM Sans', sans-serif" }}>{phase.sub}</p>
-              <p style={{ fontSize: "15px", lineHeight: 1.8, color: C.textSecondary, fontFamily: "'DM Sans', sans-serif" }}>{result.actionPlan[phase.key]}</p>
+            <div style={{ flex: 1, paddingTop: "5px" }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: "10px", marginBottom: "8px" }}>
+                <p style={{ fontSize: "9px", letterSpacing: "2.5px", textTransform: "uppercase", color: phase.color, fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}>{phase.label}</p>
+                <p style={{ fontSize: "11px", color: BRAND.mutado, fontFamily: "'DM Sans', sans-serif", fontStyle: "italic" }}>{phase.sub}</p>
+              </div>
+              <p style={{ fontSize: "15px", lineHeight: 1.85, color: BRAND.areiaEsc, fontFamily: "'DM Sans', sans-serif" }}>{result.actionPlan[phase.key]}</p>
             </div>
           </div>
         ))}
       </SectionBlock>
 
-      {/* Closing Thought */}
-      <div style={{ borderLeft: "2px solid #C4922A", paddingLeft: "28px", marginBottom: "64px" }}>
-        <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 300, fontStyle: "italic", lineHeight: 1.85, color: C.textPrimary }}>
+      {/* Pensamento Final */}
+      <div style={{ borderLeft: `2px solid ${BRAND.ouro}`, paddingLeft: "28px", marginBottom: "64px", position: "relative" }}>
+        <div style={{ position: "absolute", top: "-4px", left: "-5px", width: "8px", height: "8px", borderRadius: "50%", background: BRAND.ouro }} />
+        <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 300, fontStyle: "italic", lineHeight: 1.9, color: BRAND.areia }}>
           {result.closingThought}
         </p>
       </div>
 
-      {/* Download / Export buttons */}
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "20px" }}>
+      {/* Footer da marca */}
+      <div style={{ textAlign: "center", marginBottom: "52px", opacity: 0.4 }}>
+        <p style={{ fontSize: "10px", letterSpacing: "4px", color: BRAND.areiaEsc, textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>
+          Bússola · Encontra o teu norte.
+        </p>
+      </div>
+
+      {/* Botões */}
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
         <button
           onClick={() => {
-            // Build plain-text version of the report
-            const lines = [];
-            lines.push("LIFE COMPASS — PERSONAL REPORT");
-            lines.push("================================\n");
-
-            lines.push("LIFE BALANCE SCORES");
-            lines.push("-------------------");
-            const wLabels = ["Health & Energy","Career & Work","Finances","Relationships","Personal Growth","Fun & Creativity","Purpose & Meaning","Environment & Space"];
-            const wIds = ["w1","w2","w3","w4","w5","w6","w7","w8"];
-            wLabels.forEach((l, i) => { lines.push(`${l}: ${answers[wIds[i]] || "–"} / 10`); });
-            lines.push("");
-
-            lines.push("SITUATION PROFILE");
-            lines.push("-----------------");
+            const lines = ["BÚSSOLA — RELATÓRIO PESSOAL", "Encontra o teu norte.", "============================\n"];
+            lines.push("RODA DA VIDA\n------------");
+            wheelLabelsFull.forEach((l, i) => lines.push(`${l}: ${answers[wheelIds[i]] || "–"} / 10`));
+            lines.push("\nA TUA SITUAÇÃO ACTUAL\n---------------------");
             lines.push(result.situationProfile);
-            lines.push("");
-
-            lines.push("YOUR IKIGAI COMPASS");
-            lines.push("-------------------");
-            lines.push(`What You Love:\n${result.ikigaiCompass.whatYouLove}\n`);
-            lines.push(`What You're Good At:\n${result.ikigaiCompass.whatYoureGoodAt}\n`);
-            lines.push(`What The World Needs:\n${result.ikigaiCompass.whatWorldNeeds}\n`);
-            lines.push(`What Rewards You:\n${result.ikigaiCompass.whatYouCanBeRewardedFor}\n`);
-
-            lines.push("PROJECT PATHS");
-            lines.push("-------------");
+            lines.push("\nBÚSSOLA IKIGAI\n--------------");
+            lines.push(`O Que Amas:\n${result.ikigaiCompass.whatYouLove}\n`);
+            lines.push(`No Que És Bom:\n${result.ikigaiCompass.whatYoureGoodAt}\n`);
+            lines.push(`O Que o Mundo Precisa:\n${result.ikigaiCompass.whatWorldNeeds}\n`);
+            lines.push(`O Que Te Pode Recompensar:\n${result.ikigaiCompass.whatYouCanBeRewardedFor}\n`);
+            lines.push("CAMINHOS DE PROJECTO\n--------------------");
             result.projectPaths.forEach((p, i) => {
-              lines.push(`\n${i + 1}. ${p.title} [${p.archetype}]`);
+              lines.push(`\n${i + 1}. ${p.title} [${archetypeLabels[p.archetype] || p.archetype}]`);
               lines.push(p.description);
-              lines.push(`\nWhy it fits you: ${p.whyItFitsYou}`);
-              lines.push(`\nFirst Three Steps:`);
+              lines.push(`\nPorque se adequa a ti: ${p.whyItFitsYou}`);
+              lines.push("\nPrimeiros Três Passos:");
               p.firstThreeSteps.forEach((s, j) => lines.push(`  ${j+1}. ${s}`));
             });
-            lines.push("");
-
-            lines.push("90-DAY ACTION PLAN");
-            lines.push("------------------");
-            lines.push(`Weeks 1–4 (Foundation):\n${result.actionPlan.weeks1to4}\n`);
-            lines.push(`Weeks 5–8 (Momentum):\n${result.actionPlan.weeks5to8}\n`);
-            lines.push(`Weeks 9–12 (Milestone):\n${result.actionPlan.weeks9to12}\n`);
-
-            lines.push("A FINAL THOUGHT");
-            lines.push("---------------");
+            lines.push("\nPLANO DE 90 DIAS\n----------------");
+            lines.push(`Semanas 1–4:\n${result.actionPlan.weeks1to4}\n`);
+            lines.push(`Semanas 5–8:\n${result.actionPlan.weeks5to8}\n`);
+            lines.push(`Semanas 9–12:\n${result.actionPlan.weeks9to12}\n`);
+            lines.push("UM PENSAMENTO FINAL\n-------------------");
             lines.push(result.closingThought);
-
             const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
-            a.href = url; a.download = "life-compass-report.txt"; a.click();
+            a.href = url; a.download = "bussola-relatorio.txt"; a.click();
             URL.revokeObjectURL(url);
           }}
-          style={{ padding: "12px 24px", background: "#C4922A", color: C.bg, border: "none", borderRadius: "4px", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", fontWeight: 500, cursor: "pointer" }}
-        >
-          ↓ Download as .txt
-        </button>
+          style={{ padding: "13px 28px", background: BRAND.ouro, color: BRAND.noite, border: "none", borderRadius: "4px", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", fontWeight: 500, cursor: "pointer", letterSpacing: "0.3px" }}
+        >↓ Guardar Relatório</button>
 
-        <button
-          onClick={() => window.print()}
-          style={{ padding: "12px 24px", background: "transparent", color: C.textSecondary, border: `1px solid ${C.borderLight}`, borderRadius: "4px", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", cursor: "pointer" }}
-        >
-          ⎙ Print / Save as PDF
-        </button>
+        <button onClick={() => window.print()}
+          style={{ padding: "13px 28px", background: "transparent", color: BRAND.areiaEsc, border: `0.5px solid ${BRAND.bordaClara}`, borderRadius: "4px", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", cursor: "pointer" }}
+        >⎙ Imprimir / PDF</button>
 
-        <button
-          onClick={onRestart}
-          style={{ padding: "12px 24px", background: "transparent", color: C.textMuted, border: `1px solid ${C.border}`, borderRadius: "4px", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", cursor: "pointer" }}
-        >
-          ↺ Start Over
-        </button>
+        <button onClick={onRestart}
+          style={{ padding: "13px 28px", background: "transparent", color: BRAND.mutado, border: `0.5px solid ${BRAND.borda}`, borderRadius: "4px", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", cursor: "pointer" }}
+        >↺ Recomeçar</button>
       </div>
     </div>
   );
 }
 
-// ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
+// ─── COMPONENTE PRINCIPAL ─────────────────────────────────────────────────────
 
 export default function LifeCompass() {
-  const [phase, setPhase] = useState("welcome"); // welcome | section-intro | question | processing | results
+  const [phase, setPhase] = useState("welcome");
   const [sectionIdx, setSectionIdx] = useState(0);
   const [questionIdx, setQuestionIdx] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -427,9 +499,8 @@ export default function LifeCompass() {
   const totalQ = SECTIONS.reduce((s, sec) => s + sec.questions.length, 0);
   const answeredCount = SECTIONS.slice(0, sectionIdx).reduce((s, sec) => s + sec.questions.length, 0) + questionIdx;
   const progressPct = totalQ > 0 ? (answeredCount / totalQ) * 100 : 0;
-  const accent = currentSection?.accent || "#C4922A";
+  const accent = currentSection?.accent || BRAND.ouro;
 
-  // Loading animation
   useEffect(() => {
     if (phase === "processing") {
       const iv = setInterval(() => setLoadingTick(t => (t + 1) % 4), 600);
@@ -437,7 +508,6 @@ export default function LifeCompass() {
     }
   }, [phase]);
 
-  // Load saved answer when question changes
   useEffect(() => {
     if (phase === "question" && currentQuestion) {
       const saved = answers[currentQuestion.id];
@@ -447,7 +517,7 @@ export default function LifeCompass() {
 
   const fade = (fn) => {
     setVisible(false);
-    setTimeout(() => { fn(); setVisible(true); }, 270);
+    setTimeout(() => { fn(); setVisible(true); }, 280);
   };
 
   const canProceed = () => {
@@ -465,7 +535,6 @@ export default function LifeCompass() {
       newAnswers[currentQuestion.id] = currentAnswer;
     }
     setAnswers(newAnswers);
-
     setVisible(false);
     setTimeout(() => {
       if (questionIdx < currentSection.questions.length - 1) {
@@ -482,7 +551,7 @@ export default function LifeCompass() {
         generateResults(newAnswers);
       }
       setVisible(true);
-    }, 270);
+    }, 280);
   };
 
   const handleBack = () => {
@@ -491,7 +560,6 @@ export default function LifeCompass() {
       newAnswers[currentQuestion.id] = currentAnswer;
     }
     setAnswers(newAnswers);
-
     setVisible(false);
     setTimeout(() => {
       if (questionIdx > 0) {
@@ -509,34 +577,32 @@ export default function LifeCompass() {
         setPhase("welcome");
       }
       setVisible(true);
-    }, 270);
+    }, 280);
   };
 
   const generateResults = async (allAnswers) => {
     setErrorMsg(null);
-    const lines = ["LIFE COMPASS ASSESSMENT — COMPLETE RESPONSES\n"];
+    const lines = ["AVALIAÇÃO BÚSSOLA — RESPOSTAS COMPLETAS\n"];
     SECTIONS.forEach(sec => {
       lines.push(`\n## ${sec.partLabel}: ${sec.title}`);
       sec.questions.forEach(q => {
         const a = allAnswers[q.id];
         if (a !== undefined && a !== "") {
-          lines.push(`\nQ: ${q.label}`);
-          lines.push(`A: ${a}`);
+          lines.push(`\nP: ${q.label}`);
+          lines.push(`R: ${a}`);
         }
       });
     });
 
-    
-
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: { 
-    "Content-Type": "application/json",
-    "x-api-key": import.meta.env.VITE_ANTHROPIC_API_KEY,
-    "anthropic-version": "2023-06-01",
-    "anthropic-dangerous-direct-browser-access": "true",
-  },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": import.meta.env.VITE_ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 4000,
@@ -546,106 +612,148 @@ export default function LifeCompass() {
       });
       const data = await res.json();
       const text = data.content?.find(b => b.type === "text")?.text || "";
-      const clean = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-      const parsed = JSON.parse(clean);
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+if (!jsonMatch) throw new Error("No JSON found");
+const clean = jsonMatch[0];
+const parsed = JSON.parse(clean);
       setResult(parsed);
       setPhase("results");
     } catch (err) {
-      setErrorMsg("Something went wrong generating your report. Please try again.");
+      setErrorMsg("Algo correu mal ao gerar o teu relatório. Por favor tenta novamente.");
       setPhase("question");
       setSectionIdx(SECTIONS.length - 1);
       setQuestionIdx(SECTIONS[SECTIONS.length - 1].questions.length - 1);
     }
   };
 
-  // ── RENDER ────────────────────────────────────────────────────────────────
-
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, color: C.textPrimary, position: "relative", overflowX: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: BRAND.noite, color: BRAND.areia, position: "relative", overflowX: "hidden" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         textarea { resize: none; }
         textarea::placeholder { color: #4A4030; }
-        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #3A3020; border-radius: 2px; }
-        .lc-fade { opacity: 1; transform: translateY(0); transition: opacity 0.27s ease, transform 0.27s ease; }
-        .lc-hidden { opacity: 0; transform: translateY(10px); }
-        @keyframes lc-spin { to { transform: rotate(360deg); } }
-        @keyframes lc-pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+        ::-webkit-scrollbar-thumb { background: ${BRAND.bordaClara}; border-radius: 2px; }
+        .b-fade { opacity: 1; transform: translateY(0); transition: opacity 0.28s ease, transform 0.28s ease; }
+        .b-hidden { opacity: 0; transform: translateY(12px); }
+        @keyframes b-spin { to { transform: rotate(360deg); } }
+        @keyframes b-needle { 0%{transform:rotate(-8deg)} 50%{transform:rotate(8deg)} 100%{transform:rotate(-8deg)} }
       `}</style>
 
-      {/* Ambient glow */}
-      <div style={{ position: "fixed", inset: 0, background: "radial-gradient(ellipse at 15% 60%, rgba(196,146,42,0.05) 0%, transparent 55%), radial-gradient(ellipse at 85% 20%, rgba(90,155,122,0.04) 0%, transparent 55%)", pointerEvents: "none", zIndex: 0 }} />
+      {/* Ambient glows nas cores da marca */}
+      <div style={{
+        position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
+        background: `
+          radial-gradient(ellipse at 8% 75%, ${BRAND.ouro}07 0%, transparent 45%),
+          radial-gradient(ellipse at 92% 12%, ${BRAND.verde}05 0%, transparent 45%),
+          radial-gradient(ellipse at 50% 95%, ${BRAND.roxo}04 0%, transparent 40%)
+        `,
+      }} />
 
-      {/* Progress bar */}
+      {/* Barra de progresso com cor da secção actual */}
       {phase === "question" && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, height: "2px", background: C.border, zIndex: 100 }}>
-          <div style={{ height: "100%", width: `${progressPct}%`, background: accent, transition: "width 0.5s ease, background 0.5s ease" }} />
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, height: "2px", background: BRAND.borda, zIndex: 100 }}>
+          <div style={{ height: "100%", width: `${progressPct}%`, background: accent, transition: "width 0.5s ease, background 0.6s ease" }} />
         </div>
       )}
 
       <div style={{ maxWidth: "660px", margin: "0 auto", padding: "0 28px", position: "relative", zIndex: 1 }}>
 
-        {/* ── WELCOME ── */}
+        {/* ── BOAS-VINDAS ── */}
         {phase === "welcome" && (
-          <div className={`lc-fade ${!visible ? "lc-hidden" : ""}`}
+          <div className={`b-fade ${!visible ? "b-hidden" : ""}`}
             style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", paddingTop: "80px", paddingBottom: "80px" }}>
-            <p style={{ fontSize: "10px", letterSpacing: "3.5px", color: C.textMuted, textTransform: "uppercase", marginBottom: "24px", fontFamily: "'DM Sans', sans-serif" }}>
-              A Life Compass Assessment
-            </p>
-            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(56px, 9vw, 84px)", fontWeight: 300, lineHeight: 1.02, color: C.textPrimary, marginBottom: "36px" }}>
-              Find Your<br /><em style={{ fontStyle: "italic", color: "#C4922A" }}>Direction</em>
-            </h1>
-            <p style={{ fontSize: "16px", lineHeight: 1.8, color: C.textSecondary, maxWidth: "500px", marginBottom: "14px", fontFamily: "'DM Sans', sans-serif" }}>
-              This assessment layers three evidence-based frameworks — the <strong style={{ color: C.textPrimary, fontWeight: 500 }}>Wheel of Life</strong>, the <strong style={{ color: C.textPrimary, fontWeight: 500 }}>PERMA model</strong>, and <strong style={{ color: C.textPrimary, fontWeight: 500 }}>Ikigai</strong> — to give you a clear picture of where you stand today and a concrete path forward.
-            </p>
-            <p style={{ fontSize: "14px", lineHeight: 1.7, color: C.textMuted, marginBottom: "48px", fontFamily: "'DM Sans', sans-serif" }}>
-              35 questions · 3 parts · 20–30 minutes · Personalized AI-generated action plan
+
+            {/* Wordmark com rosa dos ventos */}
+            <div style={{ display: "flex", alignItems: "center", gap: "18px", marginBottom: "64px" }}>
+              <CompassRose size={56} />
+              <div>
+                <p style={{ fontSize: "24px", fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, color: BRAND.ouro, letterSpacing: "5px", textTransform: "uppercase", lineHeight: 1 }}>Bússola</p>
+                <p style={{ fontSize: "10px", color: BRAND.mutado, fontFamily: "'DM Sans', sans-serif", letterSpacing: "2px", marginTop: "5px" }}>Encontra o teu norte.</p>
+              </div>
+            </div>
+
+            <p style={{ fontSize: "10px", letterSpacing: "3.5px", color: BRAND.mutado, textTransform: "uppercase", marginBottom: "20px", fontFamily: "'DM Sans', sans-serif" }}>
+              Uma Avaliação de Orientação de Vida
             </p>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "52px", maxWidth: "440px" }}>
-              {SECTIONS.map(s => (
-                <div key={s.id} style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
-                  <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: s.accent, marginTop: "6px", flexShrink: 0 }} />
-                  <div>
-                    <span style={{ fontSize: "10px", color: s.accent, letterSpacing: "2px", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>{s.partLabel} · </span>
-                    <span style={{ fontSize: "14px", color: C.textSecondary, fontFamily: "'DM Sans', sans-serif" }}>{s.title}</span>
-                    <span style={{ fontSize: "12px", color: C.textMuted, fontFamily: "'DM Sans', sans-serif" }}> — {s.questions.length} questions</span>
+            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(50px, 9vw, 78px)", fontWeight: 300, lineHeight: 1.02, color: BRAND.areia, marginBottom: "28px" }}>
+              Descobre<br /><em style={{ fontStyle: "italic", color: BRAND.ouro }}>o Teu Norte</em>
+            </h1>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "32px" }}>
+              <div style={{ width: "48px", height: "1px", background: BRAND.ouro }} />
+              <p style={{ fontSize: "12px", color: BRAND.mutado, fontFamily: "'DM Sans', sans-serif", fontStyle: "italic" }}>
+                O design da Bússola é deliberadamente anti-wellness.
+              </p>
+            </div>
+
+            <p style={{ fontSize: "16px", lineHeight: 1.85, color: BRAND.areiaEsc, maxWidth: "500px", marginBottom: "12px", fontFamily: "'DM Sans', sans-serif" }}>
+              Esta avaliação combina três frameworks baseados em ciência —
+              a <strong style={{ color: BRAND.areia, fontWeight: 500 }}>Roda da Vida</strong>,
+              o <strong style={{ color: BRAND.areia, fontWeight: 500 }}>modelo PERMA</strong> e
+              o <strong style={{ color: BRAND.areia, fontWeight: 500 }}>Ikigai</strong> — para te dar uma
+              imagem honesta de onde estás e um caminho concreto em frente.
+            </p>
+            <p style={{ fontSize: "13px", lineHeight: 1.7, color: BRAND.mutado, marginBottom: "52px", fontFamily: "'DM Sans', sans-serif", fontStyle: "italic" }}>
+              35 perguntas · 3 partes · 20–30 minutos · Plano de acção personalizado por IA
+            </p>
+
+            {/* Secções */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "56px", maxWidth: "440px" }}>
+              {SECTIONS.map((s) => (
+                <div key={s.id} style={{ display: "flex", alignItems: "center", gap: "16px", padding: "14px 18px", background: BRAND.carvao, borderRadius: "6px", border: `0.5px solid ${BRAND.borda}`, borderLeft: `2px solid ${s.accent}` }}>
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontSize: "10px", color: s.accent, letterSpacing: "2.5px", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}>{s.partLabel}</span>
+                    <span style={{ fontSize: "10px", color: BRAND.mutado, fontFamily: "'DM Sans', sans-serif" }}> · </span>
+                    <span style={{ fontSize: "14px", color: BRAND.areiaEsc, fontFamily: "'DM Sans', sans-serif" }}>{s.title}</span>
                   </div>
+                  <span style={{ fontSize: "11px", color: BRAND.mutado, fontFamily: "'DM Sans', sans-serif", flexShrink: 0 }}>{s.questions.length} perguntas</span>
                 </div>
               ))}
             </div>
 
             <button
               onClick={() => fade(() => { setSectionIdx(0); setPhase("section-intro"); })}
-              style={{ alignSelf: "flex-start", padding: "15px 38px", background: "#C4922A", color: C.bg, border: "none", borderRadius: "4px", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", fontWeight: 500, letterSpacing: "0.3px", cursor: "pointer", transition: "opacity 0.2s" }}
+              style={{ alignSelf: "flex-start", padding: "15px 42px", background: BRAND.ouro, color: BRAND.noite, border: "none", borderRadius: "4px", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", fontWeight: 500, letterSpacing: "0.5px", cursor: "pointer", transition: "opacity 0.2s" }}
               onMouseEnter={e => e.target.style.opacity = "0.88"}
               onMouseLeave={e => e.target.style.opacity = "1"}
             >
-              Begin the Assessment →
+              Começar a Avaliação →
             </button>
           </div>
         )}
 
-        {/* ── SECTION INTRO ── */}
+        {/* ── INTRODUÇÃO DE SECÇÃO ── */}
         {phase === "section-intro" && currentSection && (
-          <div className={`lc-fade ${!visible ? "lc-hidden" : ""}`}
+          <div className={`b-fade ${!visible ? "b-hidden" : ""}`}
             style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", paddingTop: "80px", paddingBottom: "80px" }}>
-            <p style={{ fontSize: "10px", letterSpacing: "3px", color: currentSection.accent, textTransform: "uppercase", marginBottom: "24px", fontFamily: "'DM Sans', sans-serif" }}>
-              {currentSection.partLabel}
-            </p>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(40px, 7vw, 60px)", fontWeight: 300, lineHeight: 1.1, color: C.textPrimary, marginBottom: "28px" }}>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "40px" }}>
+              <div style={{ width: "36px", height: "36px", borderRadius: "50%", border: `1.5px solid ${currentSection.accent}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ width: "9px", height: "9px", borderRadius: "50%", background: currentSection.accent }} />
+              </div>
+              <p style={{ fontSize: "10px", letterSpacing: "3px", color: currentSection.accent, textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}>
+                {currentSection.partLabel}
+              </p>
+            </div>
+
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 7vw, 56px)", fontWeight: 300, lineHeight: 1.1, color: BRAND.areia, marginBottom: "20px" }}>
               {currentSection.title}
             </h2>
-            <p style={{ fontSize: "16px", lineHeight: 1.8, color: C.textSecondary, maxWidth: "520px", marginBottom: "16px", fontFamily: "'DM Sans', sans-serif" }}>
+
+            <div style={{ width: "36px", height: "1px", background: currentSection.accent, marginBottom: "28px" }} />
+
+            <p style={{ fontSize: "16px", lineHeight: 1.85, color: BRAND.areiaEsc, maxWidth: "520px", marginBottom: "14px", fontFamily: "'DM Sans', sans-serif" }}>
               {currentSection.intro}
             </p>
-            <p style={{ fontSize: "13px", color: C.textMuted, marginBottom: "52px", fontFamily: "'DM Sans', sans-serif" }}>
-              {currentSection.questions.length} questions in this part
+            <p style={{ fontSize: "12px", color: BRAND.mutado, marginBottom: "52px", fontFamily: "'DM Sans', sans-serif", fontStyle: "italic" }}>
+              {currentSection.questions.length} perguntas nesta parte
             </p>
-            <div style={{ display: "flex", gap: "14px" }}>
+
+            <div style={{ display: "flex", gap: "12px" }}>
               {sectionIdx > 0 && (
                 <button
                   onClick={() => fade(() => {
@@ -655,8 +763,8 @@ export default function LifeCompass() {
                     setCurrentAnswer(answers[prev.questions[prev.questions.length - 1].id] || "");
                     setPhase("question");
                   })}
-                  style={{ padding: "14px 24px", background: "transparent", color: C.textMuted, border: `1px solid ${C.border}`, borderRadius: "4px", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", cursor: "pointer" }}
-                >← Back</button>
+                  style={{ padding: "14px 24px", background: "transparent", color: BRAND.mutado, border: `0.5px solid ${BRAND.borda}`, borderRadius: "4px", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", cursor: "pointer" }}
+                >← Voltar</button>
               )}
               <button
                 onClick={() => fade(() => {
@@ -664,108 +772,149 @@ export default function LifeCompass() {
                   setCurrentAnswer(answers[currentSection.questions[0].id] || "");
                   setPhase("question");
                 })}
-                style={{ padding: "14px 32px", background: currentSection.accent, color: C.bg, border: "none", borderRadius: "4px", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", fontWeight: 500, cursor: "pointer" }}
+                style={{ padding: "14px 36px", background: currentSection.accent, color: BRAND.noite, border: "none", borderRadius: "4px", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", fontWeight: 500, cursor: "pointer", letterSpacing: "0.3px" }}
               >
-                Begin {currentSection.partLabel} →
+                Começar {currentSection.partLabel} →
               </button>
             </div>
           </div>
         )}
 
-        {/* ── QUESTION ── */}
+        {/* ── PERGUNTA ── */}
         {phase === "question" && currentQuestion && (
-          <div className={`lc-fade ${!visible ? "lc-hidden" : ""}`}
+          <div className={`b-fade ${!visible ? "b-hidden" : ""}`}
             style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", paddingTop: "80px", paddingBottom: "100px" }}>
 
             {errorMsg && (
-              <div style={{ padding: "14px 18px", background: "rgba(180,60,60,0.1)", border: "1px solid rgba(180,60,60,0.3)", borderRadius: "6px", marginBottom: "28px", fontSize: "14px", color: "#E88", fontFamily: "'DM Sans', sans-serif" }}>
+              <div style={{ padding: "14px 18px", background: "rgba(180,60,60,0.08)", border: "0.5px solid rgba(180,60,60,0.25)", borderRadius: "6px", marginBottom: "28px", fontSize: "14px", color: "#D08080", fontFamily: "'DM Sans', sans-serif" }}>
                 {errorMsg}
               </div>
             )}
 
-            <p style={{ fontSize: "10px", letterSpacing: "2.5px", textTransform: "uppercase", color: C.textMuted, marginBottom: "52px", fontFamily: "'DM Sans', sans-serif" }}>
-              <span style={{ color: accent }}>{currentSection.partLabel}</span> · Question {questionIdx + 1} of {currentSection.questions.length}
-            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "52px" }}>
+              <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: accent }} />
+              <p style={{ fontSize: "10px", letterSpacing: "2.5px", textTransform: "uppercase", color: BRAND.mutado, fontFamily: "'DM Sans', sans-serif" }}>
+                <span style={{ color: accent }}>{currentSection.partLabel}</span>
+                {" · Pergunta "}{questionIdx + 1}{" de "}{currentSection.questions.length}
+              </p>
+            </div>
 
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(24px, 4.5vw, 34px)", fontWeight: 400, lineHeight: 1.3, color: C.textPrimary, marginBottom: "12px" }}>
+            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(22px, 4.5vw, 33px)", fontWeight: 400, lineHeight: 1.35, color: BRAND.areia, marginBottom: "14px" }}>
               {currentQuestion.label}
             </h3>
-            <p style={{ fontSize: "14px", color: C.textMuted, marginBottom: "36px", lineHeight: 1.6, fontFamily: "'DM Sans', sans-serif" }}>
+            <p style={{ fontSize: "13px", color: BRAND.mutado, marginBottom: "36px", lineHeight: 1.65, fontFamily: "'DM Sans', sans-serif", fontStyle: "italic" }}>
               {currentQuestion.subtext}
             </p>
 
-            {/* Scale */}
+            {/* Escala */}
             {currentQuestion.type === "scale" && (
               <div>
-                <div style={{ display: "flex", gap: "7px", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   {[1,2,3,4,5,6,7,8,9,10].map(n => (
                     <button key={n} onClick={() => setCurrentAnswer(n)}
-                      style={{ width: "48px", height: "48px", borderRadius: "6px", border: `1.5px solid ${currentAnswer === n ? accent : (n <= (currentAnswer || 0) ? accent + "44" : C.border)}`, background: currentAnswer === n ? accent : "transparent", color: currentAnswer === n ? C.bg : (n <= (currentAnswer || 0) ? accent : C.textMuted), fontSize: "15px", fontFamily: "'DM Sans', sans-serif", cursor: "pointer", transition: "all 0.13s ease", fontWeight: currentAnswer === n ? 500 : 400 }}>
+                      style={{
+                        width: "50px", height: "50px", borderRadius: "6px",
+                        border: `0.5px solid ${currentAnswer === n ? accent : (n <= (currentAnswer || 0) ? accent + "55" : BRAND.borda)}`,
+                        background: currentAnswer === n ? accent : n <= (currentAnswer || 0) ? `${accent}10` : "transparent",
+                        color: currentAnswer === n ? BRAND.noite : (n <= (currentAnswer || 0) ? accent : BRAND.mutado),
+                        fontSize: "15px", fontFamily: "'Cormorant Garamond', serif",
+                        cursor: "pointer", transition: "all 0.13s ease",
+                        fontWeight: currentAnswer === n ? 600 : 300,
+                      }}>
                       {n}
                     </button>
                   ))}
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
-                  <span style={{ fontSize: "11px", color: C.textMuted, fontFamily: "'DM Sans', sans-serif" }}>Low</span>
-                  <span style={{ fontSize: "11px", color: C.textMuted, fontFamily: "'DM Sans', sans-serif" }}>High</span>
+                  <span style={{ fontSize: "11px", color: BRAND.mutado, fontFamily: "'DM Sans', sans-serif", fontStyle: "italic" }}>Baixo</span>
+                  <span style={{ fontSize: "11px", color: BRAND.mutado, fontFamily: "'DM Sans', sans-serif", fontStyle: "italic" }}>Alto</span>
                 </div>
               </div>
             )}
 
-            {/* Choice */}
+            {/* Escolha */}
             {currentQuestion.type === "choice" && (
               <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                 {currentQuestion.choices.map((choice, i) => (
                   <button key={i} onClick={() => setCurrentAnswer(choice)}
-                    style={{ padding: "15px 20px", textAlign: "left", background: currentAnswer === choice ? `${accent}18` : "transparent", border: `1.5px solid ${currentAnswer === choice ? accent : C.border}`, borderRadius: "6px", color: currentAnswer === choice ? C.textPrimary : C.textSecondary, fontSize: "14.5px", fontFamily: "'DM Sans', sans-serif", cursor: "pointer", transition: "all 0.13s ease", lineHeight: 1.5 }}>
+                    style={{
+                      padding: "16px 20px", textAlign: "left",
+                      background: currentAnswer === choice ? `${accent}0E` : "transparent",
+                      border: `0.5px solid ${currentAnswer === choice ? accent : BRAND.borda}`,
+                      borderRadius: "6px",
+                      color: currentAnswer === choice ? BRAND.areia : BRAND.areiaEsc,
+                      fontSize: "14px", fontFamily: "'DM Sans', sans-serif",
+                      cursor: "pointer", transition: "all 0.13s ease", lineHeight: 1.55,
+                    }}>
+                    <span style={{ color: currentAnswer === choice ? accent : BRAND.mutado, marginRight: "12px", fontSize: "10px" }}>
+                      {currentAnswer === choice ? "◆" : "◇"}
+                    </span>
                     {choice}
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Textarea */}
+            {/* Área de texto */}
             {currentQuestion.type === "textarea" && (
               <textarea
                 value={currentAnswer}
                 onChange={e => setCurrentAnswer(e.target.value)}
-                placeholder="Take your time..."
-                style={{ width: "100%", minHeight: "150px", padding: "18px", background: C.surface, border: `1.5px solid ${currentAnswer && currentAnswer.trim().length > 3 ? accent + "55" : C.border}`, borderRadius: "6px", color: C.textPrimary, fontSize: "15px", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7, transition: "border-color 0.2s ease", outline: "none" }}
+                placeholder="Toma o teu tempo..."
+                style={{
+                  width: "100%", minHeight: "150px", padding: "20px",
+                  background: BRAND.carvao,
+                  border: `0.5px solid ${currentAnswer && currentAnswer.trim().length > 3 ? accent + "66" : BRAND.borda}`,
+                  borderRadius: "6px", color: BRAND.areia, fontSize: "15px",
+                  fontFamily: "'DM Sans', sans-serif", lineHeight: 1.75,
+                  transition: "border-color 0.2s ease", outline: "none",
+                }}
               />
             )}
 
-            {/* Nav */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "40px" }}>
+            {/* Navegação */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "44px" }}>
               <button onClick={handleBack}
-                style={{ padding: "12px 18px", background: "transparent", color: C.textMuted, border: "none", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", cursor: "pointer" }}>
-                ← Back
+                style={{ padding: "12px 0", background: "transparent", color: BRAND.mutado, border: "none", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", cursor: "pointer", letterSpacing: "0.3px" }}>
+                ← Voltar
               </button>
               <button onClick={handleNext} disabled={!canProceed()}
-                style={{ padding: "13px 30px", background: canProceed() ? accent : C.border, color: canProceed() ? C.bg : C.textMuted, border: "none", borderRadius: "4px", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", fontWeight: 500, cursor: canProceed() ? "pointer" : "not-allowed", transition: "all 0.2s ease", opacity: canProceed() ? 1 : 0.5 }}>
+                style={{
+                  padding: "13px 34px",
+                  background: canProceed() ? accent : BRAND.borda,
+                  color: canProceed() ? BRAND.noite : BRAND.mutado,
+                  border: "none", borderRadius: "4px", fontSize: "13.5px",
+                  fontFamily: "'DM Sans', sans-serif", fontWeight: 500,
+                  cursor: canProceed() ? "pointer" : "not-allowed",
+                  transition: "all 0.2s ease", opacity: canProceed() ? 1 : 0.4,
+                  letterSpacing: "0.3px",
+                }}>
                 {questionIdx === currentSection.questions.length - 1 && sectionIdx === SECTIONS.length - 1
-                  ? "Generate My Compass →"
-                  : "Continue →"}
+                  ? "Gerar a Minha Bússola →"
+                  : "Continuar →"}
               </button>
             </div>
           </div>
         )}
 
-        {/* ── PROCESSING ── */}
+        {/* ── A PROCESSAR ── */}
         {phase === "processing" && (
           <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
-            <div style={{ width: "64px", height: "64px", border: `1px solid ${C.borderLight}`, borderTop: "1.5px solid #C4922A", borderRadius: "50%", animation: "lc-spin 2s linear infinite", marginBottom: "48px" }} />
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "32px", fontWeight: 300, color: C.textPrimary, marginBottom: "16px" }}>
-              Mapping your compass{".".repeat(loadingTick + 1)}
+            <div style={{ marginBottom: "48px", animation: "b-needle 3s ease-in-out infinite", transformOrigin: "center" }}>
+              <CompassRose size={88} />
+            </div>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "30px", fontWeight: 300, color: BRAND.areia, marginBottom: "14px", letterSpacing: "0.5px" }}>
+              A mapear a tua bússola{".".repeat(loadingTick + 1)}
             </h2>
-            <p style={{ fontSize: "14px", color: C.textMuted, maxWidth: "340px", lineHeight: 1.8, fontFamily: "'DM Sans', sans-serif" }}>
-              Analyzing your 35 responses across the Wheel of Life, PERMA, and Ikigai frameworks to build your personalized path forward.
+            <p style={{ fontSize: "13px", color: BRAND.mutado, maxWidth: "300px", lineHeight: 1.85, fontFamily: "'DM Sans', sans-serif", fontStyle: "italic" }}>
+              A analisar as tuas 35 respostas através da Roda da Vida, do modelo PERMA e do Ikigai.
             </p>
           </div>
         )}
 
-        {/* ── RESULTS ── */}
+        {/* ── RESULTADOS ── */}
         {phase === "results" && result && (
-          <div className={`lc-fade ${!visible ? "lc-hidden" : ""}`}>
+          <div className={`b-fade ${!visible ? "b-hidden" : ""}`}>
             <ResultsView result={result} answers={answers} onRestart={() => {
               setPhase("welcome"); setAnswers({}); setSectionIdx(0);
               setQuestionIdx(0); setCurrentAnswer(""); setResult(null); setErrorMsg(null);
